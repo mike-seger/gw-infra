@@ -1,0 +1,17 @@
+server:
+  port: 8761
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+  server:
+    enable-self-preservation: false
+
+spring.application.name: eureka
+
+management:
+  endpoints.web.exposure.include: '*'
+  endpoint.health.show-details: always
+
+jackson.serialization.indent_output: true # Enable pretty-printing
