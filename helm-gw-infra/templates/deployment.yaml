@@ -40,4 +40,4 @@ spec:
       volumes:
         - name: {{ .Values.name | default "app" }}-volume
           hostPath:
-            path: {{ (index .Values.volumes (include "helm-gw-infra.fullname" .) "hostPath") | default "/default/path" }}
+            path: {{ (index .Values.volumes .Values.name).hostPath | default "/default/path" }}
