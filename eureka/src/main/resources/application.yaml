@@ -4,16 +4,24 @@ server:
     context-path: /eureka
 
 eureka:
+  instance:
+    hostname: ${HOSTNAME}
+    instance-id: ${HOSTNAME}:${spring.application.name}:${server.port}
   client:
     register-with-eureka: false
     fetch-registry: false
   server:
     enable-self-preservation: false
+  peer:
+    awareness:
+      enable: true
 
-spring.application.name: eureka
+spring.application:
+  name: eureka
+  instance-id: ${HOSTNAME}:${spring.application.name}:${server.port}
 
 management:
   endpoints.web.exposure.include: '*'
   endpoint.health.show-details: always
 
-jackson.serialization.indent_output: true # Enable pretty-printing
+jackson.serialization.indent_output: true

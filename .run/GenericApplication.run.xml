@@ -1,9 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="GenericApplication" type="Application" factoryName="Application" nameIsGenerated="true">
     <envs>
-      <env name="EUREKA_CLIENT_ENABLED" value="false" />
-      <env name="SPRING_APPLICATION_NAME" value="app0" />
-      <env name="SERVER_PORT" value="8080" />
+      <env name="SPRING_PROFILES_ACTIVE" value="local" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="com.net128.architecture.gw.infra.GenericApplication" />
     <module name="app.main" />

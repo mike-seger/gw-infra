@@ -8,9 +8,13 @@ import java.net.UnknownHostException;
 @Data
 public class Info {
     private String hostname;
-    private String address = InetAddress.getLocalHost().getHostName();
+    private String address;
+    private String contextRoot;
+    private String port;
 
-    Info() throws UnknownHostException {
+    Info(String contextRoot, String port) throws UnknownHostException {
+        this.contextRoot = contextRoot;
+        this.port = port;
         InetAddress ip = InetAddress.getLocalHost();
         address = ip.getHostAddress();
         hostname = ip.getHostName();

@@ -1,28 +1,39 @@
 server:
   port: 8080
 
-spring.application.name: gw
+spring.application:
+  name: gw
+  instance-id: ${HOSTNAME}:${spring.application.name}:${server.port}
 
 spring:
+  application:
+    name: gw
+    instance-id: ${HOSTNAME}:${spring.application.name}:${server.port}
   cloud:
     gateway:
       routes:
         - id: eureka
-          uri: http://eureka:8761
+          uri: http://eureka1:8761
           predicates:
           - Path=/eureka/**
         - id: app1
           uri: lb://app1
           predicates:
           - Path=/app1/**
+          filters:
+          - CircuitBreaker=appCircuitBreaker
         - id: app2
           uri: lb://app2
           predicates:
           - Path=/app2/**
+          filters:
+          - CircuitBreaker=appCircuitBreaker
         - id: app3
           uri: lb://app3
           predicates:
           - Path=/app3/**
+          filters:
+          - CircuitBreaker=appCircuitBreaker
 
   thymeleaf:
     prefix: classpath:/templates/
@@ -36,7 +47,5 @@ jackson:
   serialization:
     indent_output: true # Enable pretty-printing
 
-eureka:
-  client:
-    service-url:
-      defaultZone: http://eureka:8761/eureka/eureka/
+eureka.client.service-url:
+  defaultZone: http://eureka1:8761/eureka/eureka/,http://eureka2:8762/eureka/eureka/

@@ -1,19 +1,29 @@
 version: '3.8'
 services:
-  eureka:
+  eureka1:
     build: ./eureka
-    container_name: eureka
+    container_name: eureka1
     networks:
       - backend
-      - frontend
     ports:
       - "8761:8761"
     environment:
-      - SPRING_PROFILES_ACTIVE=default
-    volumes:
-      - ./eureka:/app
-    working_dir: /app
-    command: ["java", "-jar", "build/libs/eureka-0.0.1-SNAPSHOT.jar"]
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka2:8762/eureka/eureka
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/eureka/actuator/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 6
+
+  eureka2:
+    build: ./eureka
+    container_name: eureka2
+    networks:
+      - backend
+    ports:
+      - "8762:8761"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka1:8761/eureka/eureka
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8761/eureka/actuator/health"]
       interval: 5s
@@ -22,69 +32,74 @@ services:
 
   gw:
     image: openjdk:17-jdk-slim
-    container_name: gw
+    hostname: gw
     networks:
       - backend
       - frontend
     ports:
       - "8080:8080"
-    environment:
-      - SPRING_PROFILES_ACTIVE=default
     volumes:
       - ./gw:/app
     working_dir: /app
     command: ["java", "-jar", "build/libs/gw-0.0.1-SNAPSHOT.jar"]
     depends_on:
-      eureka:
+      eureka1:
+        condition: service_healthy
+      eureka2:
         condition: service_healthy
 
   app1:
     build: ./app
-    container_name: app1
     networks:
       - backend
     environment:
-      - SPRING_PROFILES_ACTIVE=default
+      - SPRING_PROFILES_ACTIVE=cloud
       - spring.application.name=app1
-      - server.port=8080
+      - HOSTNAME={{.Service.Name}}-{{.Task.Slot}}
     volumes:
       - ./app:/app
     working_dir: /app
     command: ["java", "-jar", "build/libs/app-0.0.1-SNAPSHOT.jar"]
     depends_on:
-      eureka:
+      eureka1:
+        condition: service_healthy
+      eureka2:
         condition: service_healthy
 
   app2:
     image: openjdk:17-jdk-slim
-    container_name: app2
     networks:
       - backend
     environment:
-      - SPRING_PROFILES_ACTIVE=default
+      - SPRING_PROFILES_ACTIVE=cloud
       - spring.application.name=app2
+      - HOSTNAME={{.Service.Name}}-{{.Task.Slot}}
     volumes:
       - ./app:/app
     working_dir: /app
     command: ["java", "-jar", "build/libs/app-0.0.1-SNAPSHOT.jar"]
     depends_on:
-      eureka:
+      eureka1:
+        condition: service_healthy
+      eureka2:
         condition: service_healthy
 
   app3:
     image: openjdk:17-jdk-slim
-    container_name: app3
     networks:
       - backend
     environment:
-      - SPRING_PROFILES_ACTIVE=default
+      - SPRING_PROFILES_ACTIVE=cloud
       - spring.application.name=app3
+      - HOSTNAME={{.Service.Name}}-{{.Task.Slot}}
     volumes:
       - ./app:/app
     working_dir: /app
     command: ["java", "-jar", "build/libs/app-0.0.1-SNAPSHOT.jar"]
     depends_on:
-      eureka:
+      eureka1:
+        condition: service_healthy
+      eureka2:
         condition: service_healthy
 
 networks:
