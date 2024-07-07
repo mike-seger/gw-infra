@@ -45,13 +45,14 @@ volumes:
   gw:
     hostPath: ./gw
   app1:
-    hostPath: ./app
+    hostPath: ./app1
   app2:
-    hostPath: ./app
+    hostPath: ./app2
   app3:
-    hostPath: ./app
+    hostPath: ./app3
 
 eureka:
+  name: eureka
   image:
     repository: eclipse-temurin
     tag: 17-jre
@@ -66,6 +67,7 @@ eureka:
   command: ["java", "-jar", "build/libs/eureka-0.0.1-SNAPSHOT.jar"]
 
 gateway:
+  name: gw
   image:
     repository: eclipse-temurin
     tag: 17-jre
