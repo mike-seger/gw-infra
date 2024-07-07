@@ -1,0 +1,8 @@
+spring:
+  application:
+    instance-id: ${HOSTNAME}:${spring.application.name}:${server.port}
+
+eureka.client.service-url:
+  defaultZone: http://eureka1:8761/eureka/eureka/,http://eureka2:8762/eureka/eureka/
+
+eureka.client.enabled: true

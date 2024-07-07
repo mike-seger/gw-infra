@@ -44,6 +44,8 @@ services:
     networks:
       - backend
       - frontend
+    environment:
+      - SPRING_PROFILES_ACTIVE=cloud
     ports:
       - "28081:8080"
     volumes:

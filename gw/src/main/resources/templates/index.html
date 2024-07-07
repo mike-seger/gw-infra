@@ -9,7 +9,8 @@
 <body>
 
 <div id="sidenav">
-    <a th:href="${gwUrl}">gw</a>
+    <h3>Gateway Dashboard</h3>
+    <a th:href="${gwUrl}">health</a>
     <a th:href="${eurekaUrl}">eureka</a>
     <a th:each="service : ${services}" th:text="${service}" th:href="${service} + '/info'"></a>
 </div>
