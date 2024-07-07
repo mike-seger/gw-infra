@@ -11,7 +11,7 @@
 <div id="sidenav">
     <a th:href="${gwUrl}">Gateway</a>
     <a th:href="${eurekaUrl}">Eureka Admin</a>
-    <a th:each="service : ${services}" th:text="${service}" th:href="${service} + '/info/'"></a>
+    <a th:each="service : ${services}" th:text="${service}" th:href="${service} + '/info'"></a>
 </div>
 
 </body>

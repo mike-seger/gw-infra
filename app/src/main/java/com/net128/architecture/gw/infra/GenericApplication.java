@@ -6,7 +6,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 @SpringBootApplication
@@ -22,15 +21,5 @@ class GenericController {
     @GetMapping("/info")
     public Info info() throws UnknownHostException {
         return new Info();
-    }
-}
-
-class Info {
-    String hostname;
-    String address = InetAddress.getLocalHost().getHostName();
-    Info() throws UnknownHostException {
-        InetAddress ip = InetAddress.getLocalHost();
-        address = ip.getHostName();
-        hostname = ip.getHostName();
     }
 }

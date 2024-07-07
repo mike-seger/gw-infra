@@ -22,7 +22,7 @@ public class IndexController {
         services.remove("gw");
         Collections.sort(services);
         model.addAttribute("services", services);
-        model.addAttribute("gwUrl", "/actuator/");
+        model.addAttribute("gwUrl", "/actuator/health");
         model.addAttribute("eurekaUrl", "/eureka/");
         return "index";
     }
