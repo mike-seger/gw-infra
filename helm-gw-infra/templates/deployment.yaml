@@ -3,15 +3,19 @@ kind: Deployment
 metadata:
   name: {{ include "helm-gw-infra.fullname" . }}
   labels:
+    app: {{ include "helm-gw-infra.fullname" . }}
     {{ include "helm-gw-infra.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: {{ include "helm-gw-infra.fullname" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
+        app: {{ include "helm-gw-infra.fullname" . }}
+        release: {{ .Release.Name }}
         {{ include "helm-gw-infra.labels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ if .Values.serviceAccount.create }}{{ .Values.serviceAccount.name | default (include "helm-gw-infra.fullname" .) }}{{ end }}
@@ -21,7 +25,7 @@ spec:
           ports:
             - containerPort: {{ .Values.service.port }}
           volumeMounts:
-            - name: {{ .Values.name | default "app" }}-volume
+            - name: {{ .Values.name }}-volume
               mountPath: /app
           workingDir: {{ .Values.workingDir }}
           command: {{ .Values.command }}
@@ -30,6 +34,18 @@ spec:
           - name: {{ .name }}
             value: {{ .value }}
           {{- end }}
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: 15
+            periodSeconds: 20
           resources:
             limits:
               cpu: {{ .Values.resources.limits.cpu }}
@@ -38,6 +54,6 @@ spec:
               cpu: {{ .Values.resources.requests.cpu }}
               memory: {{ .Values.resources.requests.memory }}
       volumes:
-        - name: {{ .Values.name | default "app" }}-volume
+        - name: {{ .Values.name }}-volume
           hostPath:
             path: {{ (index .Values.volumes .Values.name).hostPath | default "/default/path" }}

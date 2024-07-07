@@ -6,8 +6,7 @@ metadata:
     {{ include "helm-gw-infra.labels" . | nindent 4 }}
 spec:
   containers:
-  - name: wget
-    image: busybox
-    command: ['wget']
-    args:  ['{{ include "helm-gw-infra.fullname" . }}:{{ .Values.service.port }}']
+    - name: busybox
+      image: busybox
+      command: ['sh', '-c', 'until wget -O- {{ include "helm-gw-infra.fullname" . }}:{{ .Values.service.port }}; do echo waiting for service; sleep 2; done']
   restartPolicy: Never
