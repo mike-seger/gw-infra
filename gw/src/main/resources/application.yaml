@@ -10,19 +10,19 @@ spring:
         - id: eureka
           uri: http://eureka:8761
           predicates:
-            - Path=/eureka/**
+          - Path=/eureka/**
         - id: app1
           uri: lb://app1
           predicates:
-            - Path=/app1/**
+          - Path=/app1/**
         - id: app2
           uri: lb://app2
           predicates:
-            - Path=/app2/**
+          - Path=/app2/**
         - id: app3
           uri: lb://app3
           predicates:
-            - Path=/app3/**
+          - Path=/app3/**
 
   thymeleaf:
     prefix: classpath:/templates/
@@ -39,4 +39,4 @@ jackson:
 eureka:
   client:
     service-url:
-      defaultZone: http://eureka:8761/eureka/
+      defaultZone: http://eureka:8761/eureka/eureka/

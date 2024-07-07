@@ -2,26 +2,17 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Service Dashboard</title>
+    <link rel="stylesheet" href="iframe-navigator/navigation.css">
+    <script src="iframe-navigator/navigation.js"></script>
 </head>
+
 <body>
-<h1>Service Dashboard</h1>
-<table border="1">
-    <thead>
-    <tr>
-        <th>Service Name</th>
-        <th>Link</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>Eureka Server</td>
-        <td><a th:href="${eurekaUrl}">Eureka Admin</a></td>
-    </tr>
-    <tr th:each="service : ${services}">
-        <td th:text="${service}"></td>
-        <td><a th:href="'/' + ${service} + '/info'">Info</a></td>
-    </tr>
-    </tbody>
-</table>
+
+<div id="sidenav">
+    <a th:href="${gwUrl}">Gateway</a>
+    <a th:href="${eurekaUrl}">Eureka Admin</a>
+    <a th:each="service : ${services}" th:text="${service}" th:href="${service} + '/info/'"></a>
+</div>
+
 </body>
 </html>

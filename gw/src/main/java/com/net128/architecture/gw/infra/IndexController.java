@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -19,7 +20,9 @@ public class IndexController {
     public String index(Model model) {
         List<String> services = discoveryClient.getServices();
         services.remove("gw");
+        Collections.sort(services);
         model.addAttribute("services", services);
+        model.addAttribute("gwUrl", "/actuator/");
         model.addAttribute("eurekaUrl", "/eureka/");
         return "index";
     }

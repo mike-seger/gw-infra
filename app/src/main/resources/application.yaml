@@ -5,7 +5,9 @@ server:
 jackson.serialization.indent_output: true
 
 management:
-  endpoints.web.exposure.include: '*'
+  endpoints:
+    web.exposure.include: health, info, env, configprops, loggers, metrics
+    enabled-by-default: true
   endpoint.health.show-details: always
 
-eureka.client.service-url.defaultZone: http://eureka:8761/eureka/
+eureka.client.service-url.defaultZone: http://eureka:8761/eureka/eureka/
