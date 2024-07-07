@@ -1,5 +1,3 @@
-# values.yaml
-
 replicaCount: 1
 
 image:
@@ -45,11 +43,11 @@ volumes:
   gw:
     hostPath: ./gw
   app1:
-    hostPath: ./app1
+    hostPath: ./app
   app2:
-    hostPath: ./app2
+    hostPath: ./app
   app3:
-    hostPath: ./app3
+    hostPath: ./app
 
 eureka:
   name: eureka
