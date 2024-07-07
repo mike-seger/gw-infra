@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "helm-gw-infra.fullname" . }}
+  labels:
+    {{ include "helm-gw-infra.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "helm-gw-infra.fullname" . }}
+  template:
+    metadata:
+      labels:
+        {{ include "helm-gw-infra.labels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ if .Values.serviceAccount.create }}{{ .Values.serviceAccount.name | default (include "helm-gw-infra.fullname" .) }}{{ end }}
+      containers:
+        - name: {{ .Values.name | default "app" }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          volumeMounts:
+            - name: {{ .Values.name | default "app" }}-volume
+              mountPath: /app
+          workingDir: {{ .Values.workingDir }}
+          command: {{ .Values.command }}
+          env:
+          {{- range .Values.env }}
+          - name: {{ .name }}
+            value: {{ .value }}
+          {{- end }}
+          resources:
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+      volumes:
+        - name: {{ .Values.name | default "app" }}-volume
+          hostPath:
+            path: {{ (index .Values.volumes (include "helm-gw-infra.fullname" .) "hostPath") | default "/default/path" }}

@@ -1,0 +1,99 @@
+# values.yaml
+
+replicaCount: 1
+
+image:
+  repository: eclipse-temurin
+  tag: 17-jre
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8080
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+serviceAccount:
+  create: true
+  name: ""
+
+ingress:
+  enabled: false
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+volumes:
+  eureka:
+    hostPath: ./eureka
+  gw:
+    hostPath: ./gw
+  app1:
+    hostPath: ./app1
+  app2:
+    hostPath: ./app2
+  app3:
+    hostPath: ./app3
+
+eureka:
+  image:
+    repository: eclipse-temurin
+    tag: 17-jre
+  replicaCount: 1
+  ports:
+    - 8761
+    - 8762
+  workingDir: /app
+  env:
+    - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+      value: "http://eureka2:8762/eureka/eureka"
+  command: ["java", "-jar", "build/libs/eureka-0.0.1-SNAPSHOT.jar"]
+
+gateway:
+  image:
+    repository: eclipse-temurin
+    tag: 17-jre
+  replicaCount: 1
+  ports:
+    - 8080
+  workingDir: /app
+  env:
+    - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+      value: "http://eureka1:8761/eureka/,http://eureka2:8762/eureka/"
+  command: ["java", "-jar", "build/libs/gw-0.0.1-SNAPSHOT.jar"]
+
+apps:
+  - name: app1
+    env:
+      - name: SPRING_PROFILES_ACTIVE
+        value: "cloud"
+      - name: spring.application.name
+        value: "app1"
+  - name: app2
+    env:
+      - name: SPRING_PROFILES_ACTIVE
+        value: "cloud"
+      - name: spring.application.name
+        value: "app2"
+  - name: app3
+    env:
+      - name: SPRING_PROFILES_ACTIVE
+        value: "cloud"
+      - name: spring.application.name
+        value: "app3"
